@@ -12,6 +12,7 @@
 
 namespace PHPOpenSourceSaver\JWTAuth\Providers;
 
+use PHPOpenSourceSaver\JWTAuth\Http\Parser\Cookies;
 use PHPOpenSourceSaver\JWTAuth\Http\Parser\LumenRouteParams;
 
 class LumenServiceProvider extends AbstractServiceProvider
