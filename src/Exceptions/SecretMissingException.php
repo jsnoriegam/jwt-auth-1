@@ -10,16 +10,8 @@
  * file that was distributed with this source code.
  */
 
-namespace PHPOpenSourceSaver\JWTAuth\Contracts\Http;
+namespace PHPOpenSourceSaver\JWTAuth\Exceptions;
 
-use Illuminate\Http\Request;
-
-interface Parser
+class SecretMissingException extends JWTException
 {
-    /**
-     * Parse the request.
-     *
-     * @return string|null
-     */
-    public function parse(Request $request);
 }

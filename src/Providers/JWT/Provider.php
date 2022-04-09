@@ -14,13 +14,14 @@ namespace PHPOpenSourceSaver\JWTAuth\Providers\JWT;
 
 use Illuminate\Support\Arr;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
+use PHPOpenSourceSaver\JWTAuth\Exceptions\SecretMissingException;
 
 abstract class Provider
 {
     /**
      * The secret.
      */
-    protected string $secret;
+    protected ?string $secret;
 
     /**
      * The array of keys.
@@ -37,12 +38,15 @@ abstract class Provider
      *
      * @param string $secret
      * @param string $algo
-     * @param array $keys
      *
      * @return void
      */
     public function __construct($secret, $algo, array $keys)
     {
+        if(is_null($secret) && (is_null($keys['public']) || is_null($keys['private']))) {
+            throw new SecretMissingException();
+        }
+
         $this->secret = $secret;
         $this->algo = $algo;
         $this->keys = $keys;
@@ -98,8 +102,6 @@ abstract class Provider
 
     /**
      * Set the keys used to sign the token.
-     *
-     * @param array $keys
      *
      * @return $this
      */
@@ -179,8 +181,8 @@ abstract class Provider
      * requires a public/private key combo.
      *
      * @return bool
-     * @throws JWTException
      *
+     * @throws JWTException
      */
     abstract protected function isAsymmetric();
 }

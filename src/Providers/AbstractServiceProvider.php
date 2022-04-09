@@ -16,6 +16,7 @@ use Illuminate\Support\ServiceProvider;
 use Namshi\JOSE\JWS;
 use PHPOpenSourceSaver\JWTAuth\Blacklist;
 use PHPOpenSourceSaver\JWTAuth\Claims\Factory as ClaimFactory;
+use PHPOpenSourceSaver\JWTAuth\Console\JWTGenerateCertCommand;
 use PHPOpenSourceSaver\JWTAuth\Console\JWTGenerateSecretCommand;
 use PHPOpenSourceSaver\JWTAuth\Contracts\Providers\Auth;
 use PHPOpenSourceSaver\JWTAuth\Contracts\Providers\JWT as JWTContract;
@@ -78,9 +79,12 @@ abstract class AbstractServiceProvider extends ServiceProvider
         $this->registerPayloadValidator();
         $this->registerClaimFactory();
         $this->registerPayloadFactory();
-        $this->registerJWTCommand();
+        $this->registerJWTCommands();
 
-        $this->commands('tymon.jwt.secret');
+        $this->commands([
+            'tymon.jwt.secret',
+            'tymon.jwt.cert'
+        ]);
     }
 
     /**
@@ -317,16 +321,17 @@ abstract class AbstractServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerJWTCommand()
+    protected function registerJWTCommands()
     {
         $this->app->singleton('tymon.jwt.secret', fn () => new JWTGenerateSecretCommand());
+        $this->app->singleton('tymon.jwt.cert', fn () => new JWTGenerateCertCommand());
     }
 
     /**
      * Helper to get the config values.
      *
-     * @param  string  $key
-     * @param  string  $default
+     * @param string $key
+     * @param string $default
      *
      * @return mixed
      */
@@ -338,7 +343,7 @@ abstract class AbstractServiceProvider extends ServiceProvider
     /**
      * Get an instantiable configuration instance.
      *
-     * @param  string  $key
+     * @param string $key
      *
      * @return mixed
      */
